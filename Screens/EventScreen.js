@@ -29,12 +29,20 @@ export default class EventScreen extends Component {
             {title: 'Startup Presentation', venue: 'ISB, Hyderabad', date: '20 AUG', id: 2},
             {title: 'Startup Presentation', venue: 'ISB, Hyderabad', date: '03 AUG', id: 3}
 	  	],
-		isImageStatic: true
+		isImageStatic: false
 	  };
 	}
 
 	componentWillMount(){
-		
+		fetch('http://'+ipAddress+':8082/events')
+      .then((response) => response.json())
+      .then((responseJson) => {
+      	console.log(responseJson);
+      	this.setState({isLoading:false, dataSource: responseJson.items}) 
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 	}
 
 	render() {
@@ -47,36 +55,42 @@ export default class EventScreen extends Component {
 				
 				<View style={{flex: 9, padding: 5, backgroundColor: '#ecf2f4'}}>
 					{
-						this.state.isloading? 
-						(<ActivityIndicator size={'large'}/>):
+						this.state.isLoading? 
+						(<ActivityIndicator size={'large'} color={theme.themeColor}/>):
 							<FlatList
 							data={this.state.dataSource}
-							keyExtractor={(item, index) => item.id}
+							keyExtractor={(item, index) => item.title}
 							renderItem={({item}) => {
 								//console.log(item);
-								var icon = this.state.isImageStatic ? require('./images/watermark-img.jpg') : {uri: 'https://facebook.github.io/react/img/logo_og.png'};
+								var icon = this.state.isImageStatic ? require('./images/watermark-img.jpg') : {uri: "http:"+ipAddress+":8080/site/binaries"+item.image.path};
 								return(
 								<TouchableOpacity onPress={()=>this.props.navigator.navigate('EventDetail', {data: item})}>
 									
-									<Image source={icon} style={{width: undefined, borderRadius: 5, margin: 10, height: deviceHeight/7, backgroundColor: 'transparent', opacity: 0.8}}>
+									<View style={{width: undefined, margin: 10, height: deviceHeight/7}}>
+										{/*Image*/}
+										<View style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', }}>
+											<Image source={icon} style={{flex: 1, backgroundColor: 'transparent', opacity: 0.7, borderRadius: 5}}/>
+										</View>
+										{/*Content*/}
 										<View style={{flex: 1, flexDirection: 'column', padding: 10}}>
 
 											<View style={{flex:1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingRight: 10}}>
-												<Icon name='buffer' android='md-calendar' ios='ios-calendar' style={{fontSize: 20, color: 'black', marginTop: 10}}/> 
-												<Text style={{fontSize: 15, color:'black', marginTop: 10, marginLeft: 10, fontFamily: theme.fontFamily}}>{item.date}</Text>
+												<Icon name='buffer' android='md-calendar' ios='ios-calendar' style={{fontSize: 20, color: 'white', marginTop: 10, backgroundColor: 'transparent'}}/> 
+												<Text style={{fontSize: 15, color:'white', marginTop: 10, marginLeft: 10, fontFamily: theme.fontFamily, backgroundColor: 'transparent'}}>{item.date}</Text>
 											</View>
 
 											<View style={{flex: 2, flexDirection: 'column', marginLeft: 10}}>
-												<Text style={{color: 'black', fontSize: 15, fontWeight: 'bold', fontFamily: theme.fontFamily}}>{item.title}</Text>
-												<Text style={{color: 'black', fontSize: 13, fontFamily: theme.fontFamily}}>{item.venue}</Text>
+												<Text style={{color: 'white', fontSize: 15, fontWeight: 'bold', fontFamily: theme.fontFamily, backgroundColor: 'transparent'}}>{item.title}</Text>
+												<Text style={{color: 'white', fontSize: 13, fontFamily: theme.fontFamily, backgroundColor: 'transparent'}}>{item.venue}</Text>
 												
 											</View>
 											<View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingRight: 10}}>
-												<Icon name='buffer' android='md-arrow-forward' ios='ios-arrow-forward' style={{fontSize: 20, color: 'black'}}/>
+												<Icon name='buffer' android='md-arrow-forward' ios='ios-arrow-forward' style={{fontSize: 20, color: 'white', backgroundColor: 'transparent'}}/>
 											</View>
 
 										</View>
-									</Image>
+									</View>
+									
 									
 								</TouchableOpacity>
 							);}}

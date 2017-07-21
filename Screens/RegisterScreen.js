@@ -20,7 +20,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
 
-const LinkedinUrl = 'https://www.linkedin.com/uas/oauth2/authorization?client_id=750wziffe02w19&response_type=code&redirect_uri=http://api.qa1.nbos.in/api/identity/v0/auth/social/linkedIn/authorize&state=ea632485-5014-4b37-8337-51fa1111e71a&scope=r_basicprofile%20r_emailaddress%20w_share'
+const LinkedinUrl = 'http://facebook.github.io/react-native/releases/0.46/'
 
 class FadeInView extends React.Component {
   state = {

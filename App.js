@@ -18,6 +18,7 @@ import EventDetailScreen from './Screens/EventDetailScreen';
 import ProfileScreen from './Screens/ProfileScreen';
 import HomeScreen from './Screens/HomeScreen';
 import SigninScreen from './Screens/SigninScreen';
+import Sidebar from './Screens/Sidebar';
 
 const theme = {
 	themeColor: '#2a91f6',
@@ -173,7 +174,16 @@ class Profile extends React.Component {
 	}
 }
 */
-
+class Sample extends React.Component {
+	static navigationOptions = {
+		title: 'NewsDetail',
+		header: null
+	};
+	render() {
+		const { params } = this.props.navigation.state;
+		return <Sidebar navigator={this.props.navigation} theme={theme} data={params}/>;
+	}
+}
 const SampleApp3 = StackNavigator(
 	{
 		LandingScreen: { screen: LandingScreen },

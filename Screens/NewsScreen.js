@@ -24,7 +24,7 @@ export default class DealScreen extends Component {
 	
 	  this.state = {
 	  	isLoading: true,
-		isImageStatic: true,
+		isImageStatic: false,
 	  	dataSource: [
 	  		{title: '50K Network launch in Raipur', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', date: '10 JUL', id: 1},
             {title: 'The Quint Covers Community', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', date: '20 AUG', id: 2},
@@ -34,6 +34,15 @@ export default class DealScreen extends Component {
 	}
 
 	componentWillMount(){
+		fetch('http://'+ipAddress+':8082/news')
+      .then((response) => response.json())
+      .then((responseJson) => {
+      	console.log(responseJson);
+      	this.setState({isLoading:false, dataSource: responseJson.items}) 
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 		
 	}
     filter = (content) => {
@@ -55,32 +64,35 @@ export default class DealScreen extends Component {
 				
 				<View style={{flex: 8, padding: 5, backgroundColor: theme.backgroundColor}}>
 					{
-						this.state.isloading? 
-						(<ActivityIndicator size={'large'}/>):
+						this.state.isLoading? 
+						(<ActivityIndicator size={'large'} color={theme.themeColor}/>):
 							<FlatList
 							data={this.state.dataSource}
-							keyExtractor={(item, index) => item.id}
+							keyExtractor={(item, index) => item.title}
 							renderItem={({item}) => {
 								//console.log(item);
-								var icon = this.state.isImageStatic ? require('./images/watermark-img.jpg') : {uri: 'https://facebook.github.io/react/img/logo_og.png'};
+								var icon = this.state.isImageStatic ? require('./images/watermark-img.jpg') : {uri: "http:"+ipAddress+":8080/site/binaries"+item.image.path};
 								return(
 								<TouchableOpacity onPress={()=>this.props.navigator.navigate('NewsDetail', {data: item})}>
-									<Image source={icon} style={{backgroundColor: 'transparent', opacity: 0.8, width: undefined, margin: 10, height: deviceHeight/7}} borderRadius={5}>
+									<View style={{width: undefined, margin: 10, height: deviceHeight/7}}>
+										{/*Image*/}
+										<View style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', }}>
+											<Image source={icon} style={{flex: 1, backgroundColor: 'transparent', opacity: 0.7, borderRadius: 5}} />
+										</View>
+										{/*Content*/}
 										<View style={{flex: 1, flexDirection: 'column', padding: 10}}>
 
 											<View style={{flex: 2, flexDirection: 'column', marginLeft: 10}}>
-                                                <Text style={{color: 'black', fontSize: 15, fontWeight: 'bold', fontFamily: theme.fontFamily}}>{this.filterTitle(item.title)}</Text>
-                                                <Text style={{color: 'black', fontSize: 13, fontFamily: theme.fontFamily}}>{this.filter(item.content)}...</Text>
+                                                <Text style={{color: 'white', fontSize: 15, fontWeight: 'bold', fontFamily: theme.fontFamily, backgroundColor: 'transparent'}}>{this.filterTitle(item.title)}</Text>
+                                                <Text style={{color: 'white', fontSize: 13, fontFamily: theme.fontFamily, backgroundColor: 'transparent'}}>{this.filter(item.content)}...</Text>
                                                 
                                             </View>
                                             <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingRight: 10}}>
-                                                <Icon name='buffer' android='md-arrow-forward' ios='ios-arrow-forward' style={{fontSize: 20, color: 'black'}}/>
+                                                <Icon name='buffer' android='md-arrow-forward' ios='ios-arrow-forward' style={{fontSize: 20, color: 'white', backgroundColor: 'transparent'}}/>
                                             </View>
-
-											
-
 										</View>
-									</Image>
+									</View>
+									
 								
 								</TouchableOpacity>
 							);}}
