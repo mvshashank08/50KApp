@@ -6,25 +6,57 @@ import {
 	Image,
 	FlatList,
 	Platform,
-	Text
+	Text,
+	Button
 } from 'react-native';
-const remote = 'https://s15.postimg.org/tw2qkvmcb/400px.png';
+import OneSignal from 'react-native-onesignal';
+
 export default class Sidebar extends Component{
+	constructor(props) {
+		super(props);
+
+		
+		this.state = {
+			seconds: 2,
+		};
+	}
+	componentDidMount() {
+    	OneSignal.configure({});
+		//OneSignal.enableInAppAlertNotification(false);
+  	}
+
+	
 	render(){
 		const resizeMode = 'cover';
     	const text = 'I am some centered text';
 		return(
-			<View style={{flex: 1, backgroundColor: '#eee'}} >
-				<View style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', }} >
-					<Image style={{ flex: 1, resizeMode, backgroundColor: 'red', opacity: 0.7}} source={{ uri: remote }} />
-				</View>
-				<View style={{ flex: 1, justifyContent: 'center', }}>
-					<Text style={{ textAlign: 'center', fontSize: 40, color: 'white', backgroundColor: 'transparent'}} >
-						{text}
-					</Text>
-				</View>
+			<View style={styles.container}>
+				<Text style={styles.welcome}>
+				Welcome to the OneSignal Example!
+				</Text>
+				<Text style={styles.instructions}>
+				Using {Platform.OS}? Cool.
+				</Text>
 			</View>
 			
 		)
 	}
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+  },
+  instructions: {
+    textAlign: 'center',
+    color: '#333333',
+    marginBottom: 5,
+  },
+});

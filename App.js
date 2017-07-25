@@ -186,7 +186,7 @@ class Sample extends React.Component {
 }
 const SampleApp3 = StackNavigator(
 	{
-		LandingScreen: { screen: LandingScreen },
+		LandingScreen: { screen: Sample },
 		Register: {screen: Register},
 		Signin: {screen: Signin},
 		Home: {screen: Home},	
