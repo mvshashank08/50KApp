@@ -17,6 +17,7 @@ import { Container, Header, Title, Content, Footer, FooterTab, Button, Left, Rig
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Sidebar from './Sidebar';
 
+
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
 
@@ -44,7 +45,7 @@ export default class ProfileScreen extends Component {
 	componentWillMount(){
 		
 	}
-
+	
 	render() {
 		const theme = this.props.theme;
 		if(true){
@@ -54,7 +55,7 @@ export default class ProfileScreen extends Component {
 						<View style={{flex: 0, flexDirection: 'row', width: deviceWidth}}>
 							<View style={{flex: 1}}></View>
 							<View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end'}}>
-								<TouchableOpacity>
+								<TouchableOpacity >
 								<Icon name="pencil" color="gray" size={20} style={{alignSelf: 'auto'}}/>
 								</TouchableOpacity>
 							</View>

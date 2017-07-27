@@ -9,7 +9,7 @@ import {
 	Text,
 	Button
 } from 'react-native';
-import OneSignal from 'react-native-onesignal';
+//import OneSignal from 'react-native-onesignal';
 
 export default class Sidebar extends Component{
 	constructor(props) {
@@ -21,7 +21,7 @@ export default class Sidebar extends Component{
 		};
 	}
 	componentDidMount() {
-    	OneSignal.configure({});
+    	//OneSignal.configure({});
 		//OneSignal.enableInAppAlertNotification(false);
   	}
 

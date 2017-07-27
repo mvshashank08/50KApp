@@ -15,8 +15,8 @@ import {
   WebView,
   Modal
 } from 'react-native';
-import { Button, Item, Input } from 'native-base';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Button, Item, Input, Icon } from 'native-base';
+//import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
 
@@ -138,9 +138,9 @@ export default class RegisterScreen extends Component {
           visible={this.state.modalVisible}
           onRequestClose={() => {alert("Modal has been closed.")}}
         >
-          <View style={{flex: 0, flexDirection: 'row', justifyContent: 'flex-end', padding: 10, paddingTop: (Platform.OS === 'ios'?20:10)}}>
+          <View style={{flex: 0, flexDirection: 'row', justifyContent: 'flex-end', padding: 10, paddingTop: (Platform.OS === 'ios'?20:5)}}>
             <TouchableOpacity onPress={()=>this.setState({modalVisible: false})}>
-              <Icon name="close" color='gray' size={20} style={{alignSelf: 'flex-end'}}/>
+              <Icon ios='ios-close' android="md-close" style={{alignSelf: 'flex-end', color: '#444444', fontSize: 30}}/>
             </TouchableOpacity>
           </View>
           <WebView
@@ -153,15 +153,15 @@ export default class RegisterScreen extends Component {
         </Modal>
         {/*Header*/}
         <View style={{flex: 0, alignSelf: 'flex-start', marginLeft: 20, marginTop: (Platform.OS === 'ios'? 25: 15)}}>
-						<TouchableOpacity onPress={()=> goBack()}>
-						  <Icon ios='ios-arrow-back' android="md-arrow-back" style={{fontSize: 30, color: '#444444'}}/>
-						</TouchableOpacity>
+          <TouchableOpacity onPress={()=> goBack()}>
+            <Icon ios='ios-arrow-back' android="md-arrow-back" style={{fontSize: 30, color: '#444444'}}/>
+          </TouchableOpacity>
         </View>
         {/*Logo*/}
 				<View style={{flex:2}}>
           <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}>
             <FadeInView>
-              <Image source={require('./images/50k-logo.png')} style={{width: 300, height: 300}} resizeMode="contain"/>
+              <Image source={require('./images/50k-logo.png')} style={{width: 250, height: 250}} resizeMode="contain"/>
             </FadeInView>
           </View>
 				</View>

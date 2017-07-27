@@ -13,7 +13,7 @@ import {
 import { Container, Header, Title, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Drawer, Card, H3, Text, Badge } from 'native-base';
 import Sidebar from './Sidebar';
 
-const ipAddress = '10.9.9.5';
+const ipAddress = '10.9.9.40';
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
 

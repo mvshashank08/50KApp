@@ -12,13 +12,15 @@ import {
 	Dimensions,
 	ProgressViewIOS,
 	TouchableOpacity,
-	Animated
+	Animated,
+	Slider
 } from 'react-native';
 import { Container, Header, Title, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Drawer, Card, H3, Badge, Thumbnail } from 'native-base';
 
 
 const progress = 60;
 const totalMoney = 50000;
+const minInvestAmount = 1000;
 
 const ipAddress = '10.9.9.5';
 
@@ -35,7 +37,10 @@ export default class DealDetailScreen extends Component {
 			progressValue: new Animated.Value(0),
 			progressBarColor: 'orange',
 			progressRupees: 0,
-			progressPercent: 0
+			progressPercent: 0,
+			knowMorePanel: false,
+			investPanel: false,
+			amountToInvest: minInvestAmount
 		};
 		//tracking the progress value dynamically
 		this.state.progressValue.addListener(({value}) => {
@@ -147,10 +152,10 @@ export default class DealDetailScreen extends Component {
 								</View>
 
 								<View style={{flexDirection: 'row', marginTop: 10}}>
-									<Button style={{backgroundColor:theme.themeColor, flex: 1, margin: 3, borderRadius: 5, justifyContent: 'center', width: 40, height: 30}}>
+									<Button style={{backgroundColor:theme.themeColor, flex: 1, margin: 3, borderRadius: 5, justifyContent: 'center', width: 40, height: 30}} onPress={()=> this.setState({showCarousel: true, investPanel: true, amountToInvest: minInvestAmount})}>
 										<Text style={{color: 'white', fontSize: 15, fontFamily: theme.fontFamily}}>Invest</Text>
 									</Button>
-									<Button style={{flex: 1, backgroundColor: '#e5e5e5', margin: 3, borderRadius: 5, justifyContent: 'center', width: 40, height: 30}} onPress={()=> this.setState({showCarousel: true})}>
+									<Button style={{flex: 1, backgroundColor: '#e5e5e5', margin: 3, borderRadius: 5, justifyContent: 'center', width: 40, height: 30}} onPress={()=> this.setState({showCarousel: true, knowMorePanel: true})}>
 										<Text style={{color: 'black', fontSize: 15, fontFamily: theme.fontFamily}}>Know More</Text>
 									</Button>	
 								</View>
@@ -240,21 +245,71 @@ export default class DealDetailScreen extends Component {
 						this.state.showCarousel &&
 					<View style={{flex: 1, position: 'absolute', width: deviceWidth, height: deviceHeight, top: 0, left: 0, bottom: 0, right: 0, padding: 20, backgroundColor: '#d6e3e6', opacity: 0.5}} zIndex={1}></View>
 					}
-					{/*carousel window*/}
+					{/*Know more window*/}
 					{
-						this.state.showCarousel &&
+						(this.state.showCarousel && this.state.knowMorePanel) &&
 						<View style={{flex: 1, position: 'absolute', width: deviceWidth, height: deviceHeight, top: 0, left: 0, bottom: 0, right: 0, padding: 20, flexDirection: 'column', justifyContent:'center'}} zIndex={2}>
 						
 							<View style={{backgroundColor: 'white', padding: 30, flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center', borderRadius: 10, opacity: 1.0, height: 3*deviceHeight/4}}>
 								<View style={{margin: 10}}>
-									<Text style={{color: '#9b9b9b', fontSize: 30, fontFamily: theme.fontFamily}}>Thank you for showing interest!</Text>
+									<Text style={{color: '#9b9b9b', fontSize: 30, fontFamily: theme.fontFamily, textAlign: 'center'}}>Thank you for showing interest!</Text>
 								</View>
 								<View style={{margin: 10}}>
 									<Text style={{color: '#9b9b9b', textAlign: 'center', fontSize: 15, fontFamily: theme.fontFamily}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </Text>
 								</View>
 								<View style={{margin: 10}}>
-									<Button style={{backgroundColor: theme.themeColor }} rounded onPress={()=> this.setState({showCarousel: false})}>
-										<Text style={{color:'white', fontFamily: theme.fontFamily}}>Home</Text>
+									<Button style={{backgroundColor: '#e5e5e5' }} rounded onPress={()=> this.setState({showCarousel: false, knowMorePanel: false})}>
+										<Text style={{color:'black', fontFamily: theme.fontFamily}}>Close</Text>
+									</Button>
+								</View>
+							</View>
+						</View>
+					}
+					{/*Invest window*/}
+					{
+						(this.state.showCarousel && this.state.investPanel) &&
+						<View style={{flex: 1, position: 'absolute', width: deviceWidth, height: deviceHeight, top: 0, left: 0, bottom: 0, right: 0, padding: 20, flexDirection: 'column', justifyContent:'center'}} zIndex={2}>
+						
+							<View style={{backgroundColor: 'white', padding: 30, flexDirection: 'column', justifyContent: 'space-around', alignItems: 'center', borderRadius: 10, opacity: 1.0, height: 3*deviceHeight/4}}>
+								<View style={{margin: 10}}>
+									<Text style={{color: '#9b9b9b', fontSize: 30, fontFamily: theme.fontFamily}}>Invest</Text>
+								</View>
+								<View style={{margin: 10, width: '100%'}}>
+									<View style={{flexDirection: 'row', justifyContent: "space-between"}}>
+										<Text>Rs. {minInvestAmount}</Text>
+										<Text>Rs. {totalMoney}</Text>
+									</View>
+									{
+										(Platform.OS == 'ios')?
+										<Slider 
+											minimumTrackTintColor={theme.themeColor}
+											maximumValue={totalMoney}
+											minimumValue={minInvestAmount}
+											onValueChange={(value)=>this.setState({amountToInvest: parseInt(value)})}
+											thumbTintColor={theme.themeColor}
+											step={totalMoney/20}
+										/>
+										:
+										<Slider
+											maximumTrackTintColor={theme.themeColor}
+											maximumValue={totalMoney}
+											minimumValue={minInvestAmount}
+											onValueChange={(value)=>this.setState({amountToInvest: parseInt(value)})}
+											thumbTintColor={theme.themeColor}
+											step={totalMoney/20}
+											
+										/>
+
+									}
+									{/*Amount to be invested along with percentage*/}
+									<Text style={{alignSelf: 'center', marginTop: 25, fontSize: 30}}>Rs. <Text style={{color: theme.themeColor}}>{this.state.amountToInvest}</Text>  (<Text style={{color: theme.themeColor}}>{this.state.amountToInvest*100/totalMoney}%</Text>)</Text>
+								</View>
+								<View style={{margin: 10, flexDirection: 'row', justifyContent: 'space-around', width: '100%'}}>
+									<Button style={{backgroundColor: theme.themeColor }} rounded onPress={()=> this.setState({showCarousel: false, investPanel: false})}>
+										<Text style={{color:'white', fontFamily: theme.fontFamily}}>Invest</Text>
+									</Button>
+									<Button style={{backgroundColor: '#e5e5e5' }} rounded onPress={()=> this.setState({showCarousel: false, investPanel: false})}>
+										<Text style={{color:'black', fontFamily: theme.fontFamily}}>Cancel</Text>
 									</Button>
 								</View>
 							</View>

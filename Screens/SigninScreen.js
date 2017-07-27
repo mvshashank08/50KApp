@@ -53,30 +53,30 @@ export default class SigninScreen extends Component {
 		const {goBack} = this.props.navigator;
 		return (
 			<View style={{flex: 1, backgroundColor:'white', flexDirection:'column', justifyContent: 'space-around', alignItems: 'center'}}>
-                {/*Header*/}
-                <View style={{flex: 0, alignSelf: 'flex-start', marginLeft: 20, marginTop: (Platform.OS === 'ios'? 25: 15)}}>
-                    <TouchableOpacity onPress={()=> goBack()}>
-                        <Icon ios='ios-arrow-back' android="md-arrow-back" style={{fontSize: 30, color: '#444444'}}/>
-                    </TouchableOpacity>
-                </View>
-                {/*Logo*/}
-                <View style={{flex:2}}>
-                    <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}>
-                        <FadeInView>
-                            <Image source={require('./images/50k-logo.png')} style={{width: 300, height: 300}} resizeMode="contain"/>
-                        </FadeInView>
-                    </View>
-                </View>
-                {/*Sign up form*/}
-                <View style={{flex: 2, width: deviceWidth - 40, flexDirection: 'column', justifyContent: 'flex-start'}}>
-                    <TextInput style={styles.textbox} placeholder="Phone" keyboardType="phone-pad" underlineColorAndroid='transparent'/>
+        {/*Header*/}
+        <View style={{flex: 0, alignSelf: 'flex-start', marginLeft: 20, marginTop: (Platform.OS === 'ios'? 25: 15)}}>
+            <TouchableOpacity onPress={()=> goBack()}>
+                <Icon ios='ios-arrow-back' android="md-arrow-back" style={{fontSize: 30, color: '#444444'}}/>
+            </TouchableOpacity>
+        </View>
+        {/*Logo*/}
+        <View style={{flex:2}}>
+            <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}>
+                <FadeInView>
+                    <Image source={require('./images/50k-logo.png')} style={{width: 250, height: 250}} resizeMode="contain"/>
+                </FadeInView>
+            </View>
+        </View>
+        {/*Sign up form*/}
+        <View style={{flex: 2, width: deviceWidth - 40, flexDirection: 'column', justifyContent: 'flex-start'}}>
+            <TextInput style={styles.textbox} placeholder="Phone" keyboardType="phone-pad" underlineColorAndroid='transparent'/>
 
-                    <TextInput style={styles.textbox} placeholder="Email" keyboardType="email-address" underlineColorAndroid='transparent'/>
+            <TextInput style={styles.textbox} placeholder="Email" keyboardType="email-address" underlineColorAndroid='transparent'/>
 
-                    <Button  style={{backgroundColor: theme.themeColor, justifyContent: 'center', alignSelf: 'center', marginTop: 20, borderRadius: 5, width: deviceWidth - 60 }} onPress={()=>this.props.navigator.navigate('Home')} full>
-                    <Text style={{color:'white'}}>Sign in</Text>
-                    </Button>
-                </View>
+            <Button  style={{backgroundColor: theme.themeColor, justifyContent: 'center', alignSelf: 'center', marginTop: 20, borderRadius: 5, width: deviceWidth - 60 }} onPress={()=>this.props.navigator.navigate('Home')} full>
+            <Text style={{color:'white'}}>Sign in</Text>
+            </Button>
+        </View>
                 
 			</View>
 		);

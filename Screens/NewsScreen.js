@@ -16,7 +16,7 @@ import Sidebar from './Sidebar';
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
 
-const ipAddress = '10.9.9.5';
+const ipAddress = '10.9.9.40';
 
 export default class DealScreen extends Component {
 	constructor(props) {
@@ -74,20 +74,20 @@ export default class DealScreen extends Component {
 								var icon = this.state.isImageStatic ? require('./images/watermark-img.jpg') : {uri: "http:"+ipAddress+":8080/site/binaries"+item.image.path};
 								return(
 								<TouchableOpacity onPress={()=>this.props.navigator.navigate('NewsDetail', {data: item})}>
-									<View style={{width: undefined, margin: 10, height: deviceHeight/7}}>
+									<View style={{width: undefined, margin: 10, height: deviceHeight/7, borderRadius: 5}}>
 										{/*Image*/}
-										<View style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', }}>
-											<Image source={icon} style={{flex: 1, backgroundColor: 'transparent', opacity: 0.7, borderRadius: 5}} />
+										<View style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: 5, backgroundColor: 'black'}}>
+											<Image source={icon} style={{flex: 1,  opacity: 0.5, borderRadius: 5}} />
 										</View>
 										{/*Content*/}
-										<View style={{flex: 1, flexDirection: 'column', padding: 10}}>
+										<View style={{flex: 1, flexDirection: 'column', padding: 5, borderRadius: 5}}>
 
 											<View style={{flex: 2, flexDirection: 'column', marginLeft: 10}}>
                                                 <Text style={{color: 'white', fontSize: 15, fontWeight: 'bold', fontFamily: theme.fontFamily, backgroundColor: 'transparent'}}>{this.filterTitle(item.title)}</Text>
                                                 <Text style={{color: 'white', fontSize: 13, fontFamily: theme.fontFamily, backgroundColor: 'transparent'}}>{this.filter(item.content)}...</Text>
                                                 
                                             </View>
-                                            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingRight: 10}}>
+                                            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingRight: 5}}>
                                                 <Icon name='buffer' android='md-arrow-forward' ios='ios-arrow-forward' style={{fontSize: 20, color: 'white', backgroundColor: 'transparent'}}/>
                                             </View>
 										</View>
