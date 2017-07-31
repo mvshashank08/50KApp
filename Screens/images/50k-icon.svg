@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 21.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 246 234" style="enable-background:new 0 0 246 234;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#A6A8AB;}
+	.st1{clip-path:url(#SVGID_2_);fill:url(#SVGID_3_);}
+	.st2{fill-rule:evenodd;clip-rule:evenodd;fill:#2D2C73;}
+	.st3{clip-path:url(#SVGID_5_);fill:url(#SVGID_6_);}
+	.st4{clip-path:url(#SVGID_8_);fill:url(#SVGID_9_);}
+</style>
+<g>
+	<path class="st0" d="M172.6,208.6H23.8V24.3h148.7V208.6z M35.9,196.5h124.6V36.4H35.9V196.5z"/>
+	<g>
+		<defs>
+			<path id="SVGID_1_" d="M100.9,184.9l-29.5-29.7L223.5,36.6C211.2,51.6,101.1,184.6,100.9,184.9"/>
+		</defs>
+		<clipPath id="SVGID_2_">
+			<use xlink:href="#SVGID_1_"  style="overflow:visible;"/>
+		</clipPath>
+		<linearGradient id="SVGID_3_" gradientUnits="userSpaceOnUse" x1="109.1206" y1="136.4145" x2="57.9907" y2="170.6444">
+			<stop  offset="0" style="stop-color:#2E3191"/>
+			<stop  offset="1" style="stop-color:#0074BA"/>
+		</linearGradient>
+		<rect x="71.4" y="36.6" class="st1" width="152.1" height="148.4"/>
+	</g>
+	<path class="st2" d="M108.6,170.8l-37.4-15.2l132-97.1C203.2,58.5,108.1,172.3,108.6,170.8"/>
+	<g>
+		<defs>
+			<polygon id="SVGID_4_" points="40.4,150.7 226.1,34.6 71.4,155.3 			"/>
+		</defs>
+		<clipPath id="SVGID_5_">
+			<use xlink:href="#SVGID_4_"  style="overflow:visible;"/>
+		</clipPath>
+		<linearGradient id="SVGID_6_" gradientUnits="userSpaceOnUse" x1="189.5817" y1="120.5391" x2="82.1017" y2="71.669">
+			<stop  offset="0" style="stop-color:#8DD7F7"/>
+			<stop  offset="1" style="stop-color:#00BFEA"/>
+		</linearGradient>
+		<rect x="40.4" y="34.6" class="st3" width="185.7" height="120.7"/>
+	</g>
+	<g>
+		<defs>
+			<polygon id="SVGID_7_" points="226,34.7 71,155.4 115.3,157.7 			"/>
+		</defs>
+		<clipPath id="SVGID_8_">
+			<use xlink:href="#SVGID_7_"  style="overflow:visible;"/>
+		</clipPath>
+		<linearGradient id="SVGID_9_" gradientUnits="userSpaceOnUse" x1="110.3487" y1="154.1676" x2="219.5583" y2="-11.9618">
+			<stop  offset="0" style="stop-color:#00ADEE"/>
+			<stop  offset="1" style="stop-color:#CBE6D2"/>
+		</linearGradient>
+		<rect x="71" y="34.7" class="st4" width="155" height="122.9"/>
+	</g>
+</g>
+</svg>
