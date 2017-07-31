@@ -298,13 +298,13 @@ export default class DealDetailScreen extends Component {
 							</View>
 							{/*Interesed People*/}
 							<View style={{width: deviceWidth, backgroundColor:'white', paddingLeft: 20, flexDirection: 'column', padding: 5, marginBottom: 10}}>
-								<Text style={{color: theme.themeColor, fontWeight: 'bold', fontSize: 13, fontFamily: theme.fontFamily}}>WHO ARE INTERESTED</Text>
+								<Text style={{color: theme.themeColor, fontWeight: 'bold', fontSize: 13, fontFamily: theme.fontFamily}}>WHO HAVE INVESTED</Text>
 								
 								<View style={{flexDirection: 'row', margin: 5}}>
 									{
 										(this.state.dealInfo.peopleInterested == null)?
 										<View style={{flex: 1, justifyContent: 'center', padding: 30}}>
-											<Text style={{fontSize: 12, textAlign: 'center'}}>Nobody has shown interest on this deal yet.</Text>
+											<Text style={{fontSize: 12, textAlign: 'center'}}>Nobody has invested on this deal yet.</Text>
 										</View>
 										:
 										<ScrollView horizontal>
