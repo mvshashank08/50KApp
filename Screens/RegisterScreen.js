@@ -197,7 +197,7 @@ export default class RegisterScreen extends Component {
           
           <TextInput style={styles.textbox} placeholder="Email" keyboardType="email-address" underlineColorAndroid='transparent'/>
 
-          <Button  style={{backgroundColor: theme.themeColor, justifyContent: 'center', alignSelf: 'center', marginTop: 20, borderRadius: 5, width: deviceWidth - 60 }} onPress={()=>this.props.navigator.navigate('Home')} full>
+          <Button  style={{backgroundColor: theme.themeColor, justifyContent: 'center', alignSelf: 'center', marginTop: 20, borderRadius: 5, width: deviceWidth - 60 }} onPress={()=>{this.props.info.store('isLoggedIn', 'true'); this.props.navigator.navigate('Home')}} full>
             <Text style={{color:'white'}}>Sign up</Text>
           </Button>
         </View>

@@ -20,12 +20,12 @@ import { Container, Header, Title, Content, Footer, FooterTab, Button, Left, Rig
 
 
 
-const totalMoney = 50000;
-const minInvestAmount = 1000;
+
 const knowMoreURL = 'http://10.9.9.54:8008/deal/{dealUuid}/interest/{userUuid}/';
 //http://localhost:8008/deal/{dealUuid}/interest/{userUuid}?userUuid=abcd1234&dealUuid=057435da-d82c-4eca-b09e-3031aa1ac7ca
 const investURL = 'http://10.9.9.54:8008/deal/{dealUuid}/investment/{userUuid}/{amount}/';
-//
+const fundingStatusURL = 'http://10.9.9.54:8008/getFundingStatus?dealUuid=';
+const getDealURL = 'http://10.9.9.54:8008/deal?dealId=';
 
 
 
@@ -45,14 +45,16 @@ export default class DealDetailScreen extends Component {
 			progressPercent: 0,
 			knowMorePanel: false,
 			investPanel: false,
-			amountToInvest: minInvestAmount,
+			amountToInvest: 0,
 			progress: 0,
 			dealInfo: null,
-			isLoading: true
+			isLoading: true,
+			isDealClosed: false,
+			isKnowMoreLoading: false
 		};
 		//tracking the progress value dynamically
 		this.state.progressValue.addListener(({value}) => {
-			var rupees = ((value/100)*totalMoney).toFixed(2);
+			var rupees = ((value/100)*this.state.dealInfo.requiredFund).toFixed(2);
 			this.setState({progressRupees: rupees});
 			this.setState({progressPercent: Math.round(value)});
 			if(value < 25){
@@ -69,15 +71,18 @@ export default class DealDetailScreen extends Component {
 	}
 
 	componentWillMount(){
-		console.log(this.props.data.data.uuid)
-		fetch('http://'+this.props.info.ipAddress+':'+this.props.info.port+'/getDeal?dealUuid='+this.props.data.data.uuid, {method: 'GET'})
+		console.log(this.props.data.data.id)
+		fetch(getDealURL+this.props.data.data.id, {method: 'GET'})
 		.then((response) => response.json())
 		.then((responseJson)=>{
 			console.log(responseJson)
-			this.setState({dealInfo: responseJson, isLoading: false});
+			var now = new Date().getTime();
+			var endDate = responseJson.endDate;
+			var isDealClosed = (now > endDate)?true:false;
+			this.setState({dealInfo: responseJson, isLoading: false, amountToInvest: responseJson.minInvestment, isDealClosed: isDealClosed});
 			
 			//console.log(responseJson.securedFunding)
-			var value = parseInt(responseJson.securedFunding*100/totalMoney);
+			var value = parseInt(responseJson.securedFunding*100/responseJson.requiredFund);
 			//console.log(value)
 			this.setState({progress: value}, ()=>{
 				//console.log(this.state.progress)
@@ -121,13 +126,13 @@ export default class DealDetailScreen extends Component {
 	}
 	handleKnowMore = ()=>{
 		var userUuid = this.props.info.userId;
-		var dealUuid = this.state.dealInfo.uuid;
+		var dealUuid = this.state.dealInfo.id;
 
 		fetch(knowMoreURL+"?userUuid="+userUuid+"&dealUuid="+dealUuid, {method: 'POST'})
 		.then((response)=>{
 			console.log(response);
 			if(response.status == 200){
-				this.setState({showCarousel: true, knowMorePanel: true});
+				this.setState({showCarousel: true, knowMorePanel: true, isKnowMoreLoading: false});
 			}
 			else{
 				//handle negative response - like a toast message in Android, for iOS ?
@@ -139,7 +144,7 @@ export default class DealDetailScreen extends Component {
 		//()=> this.setState({showCarousel: false, investPanel: false})
 		var amount = this.state.amountToInvest;
 		var userUuid = this.props.info.userId;
-		var dealUuid = this.state.dealInfo.uuid;
+		var dealUuid = this.state.dealInfo.id;
 
 		fetch(investURL+"?userUuid="+userUuid+"&dealUuid="+dealUuid+"&amount="+amount, {method: 'POST'})
 		.then((response)=>{
@@ -156,6 +161,29 @@ export default class DealDetailScreen extends Component {
 					],
 					{ cancelable: false }
 				)
+
+				//get updated funding status and update the progress bar
+				fetch(getDealURL+this.props.data.data.id, {method: 'GET'})
+				.then((response)=>response.json())
+				.then((responseJson)=>{
+					//update secured funding in dealInfo
+					if(responseJson){
+						this.setState({dealInfo: responseJson});
+						var value = parseInt(responseJson.securedFunding*100/responseJson.requiredFund);
+
+						this.setState({progress: value}, ()=>{
+							//console.log(this.state.progress)
+							//start progressbar animation
+							Animated.timing(                  // Animate over time
+							this.state.progressValue,            // The animated value to drive
+							{
+								toValue: this.state.progress,     // Animate to opacity: 1 (opaque)
+								duration: 2000,              // Make it take a while
+							}
+							).start();                        // Starts the animation
+						})
+					}
+				})
 			}
 			else{
 				//handle negative response - like a toast message in Android, for iOS ?
@@ -170,6 +198,9 @@ export default class DealDetailScreen extends Component {
 		const theme = this.props.theme;
 		var ipAddress = this.props.info.ipAddress;
 		var port = this.props.info.port;
+		
+		
+
 		if(!this.state.isLoading){
 			return(
 				<Container>
@@ -211,8 +242,8 @@ export default class DealDetailScreen extends Component {
 									) <Text style={{fontWeight: 'bold'}}>
 										{this.state.progressRupees}
 									</Text> of  <Text style={{fontWeight: 'bold'}}>
-										{totalMoney.toFixed(2)}
-									</Text> INR
+										{this.state.dealInfo.requiredFund.toFixed(2)}
+									</Text> Cr
 								</Text>
 								
 								<View style={{flex: 1, height: 5, flexDirection: 'row', borderRadius: 5, marginBottom: 10}}>
@@ -220,20 +251,31 @@ export default class DealDetailScreen extends Component {
 									<View style={{flex: 100-this.state.progress, backgroundColor: '#d6d6d6'}}></View>
 								</View>
 								{/*Invest and Know More buttons*/}
-								<View style={{flexDirection: 'row', marginTop: 10}}>
-									<Button style={{backgroundColor:theme.themeColor, flex: 1, margin: 3, borderRadius: 5, justifyContent: 'center', width: 40, height: 30}} onPress={()=> this.setState({showCarousel: true, investPanel: true, amountToInvest: minInvestAmount})}>
-										<Text style={{color: 'white', fontSize: 15, fontFamily: theme.fontFamily}}>Invest</Text>
-									</Button>
-									<Button 
-										style={{flex: 1, backgroundColor: '#e5e5e5', margin: 3, borderRadius: 5, justifyContent: 'center', width: 40, height: 30}} 
-										onPress={()=> {
-												this.handleKnowMore();	
+								{
+									!this.state.isDealClosed &&
+									<View style={{flexDirection: 'row', marginTop: 10}}>
+										<Button style={{backgroundColor:theme.themeColor, flex: 1, margin: 3, borderRadius: 5, justifyContent: 'center', width: 40, height: 30}} onPress={()=> this.setState({showCarousel: true, investPanel: true, amountToInvest: this.state.dealInfo.minInvestment})} >
+											<Text style={{color: 'white', fontSize: 15, fontFamily: theme.fontFamily}}>Invest</Text>
+										</Button>
+										<Button 
+											style={{flex: 1, backgroundColor: '#e5e5e5', margin: 3, borderRadius: 5, justifyContent: 'center', width: 40, height: 30}} 
+											onPress={()=> {
+													this.setState({isKnowMoreLoading: true})
+													this.handleKnowMore();	
+												}
 											}
-										}
-									>
-										<Text style={{color: 'black', fontSize: 15, fontFamily: theme.fontFamily}}>Know More</Text>
-									</Button>	
-								</View>
+										>
+											{
+												(this.state.isKnowMoreLoading)?
+												<ActivityIndicator size={'small'} color={'black'}/>
+												:
+												<Text style={{color: 'black', fontSize: 15, fontFamily: theme.fontFamily}}>Know More</Text>
+											}
+											
+										</Button>	
+									</View>
+								}
+								
 								
 							</View>
 
@@ -247,7 +289,7 @@ export default class DealDetailScreen extends Component {
 								<View style={{flex: 2, flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 10}}>
 									<View style={{flex: 1, flexDirection: 'column'}}>
 										<Text style={{color: '#8c8c8c', paddingBottom: 5, fontFamily: theme.fontFamily}}>Raising</Text>
-										<Text style={{color: '#3c444f', fontWeight: 'bold', fontSize: 17, fontFamily: theme.fontFamily}}>${myData.raising}</Text>
+										<Text style={{color: '#3c444f', fontWeight: 'bold', fontSize: 17, fontFamily: theme.fontFamily}}>Rs. {myData.raising} Cr</Text>
 									</View>
 									<View style={{flex: 1}}>
 										<Text style={{color: '#8c8c8c', paddingBottom: 5, fontFamily: theme.fontFamily}}>Dilution</Text>
@@ -258,11 +300,11 @@ export default class DealDetailScreen extends Component {
 								<View style={{flex: 2, flexDirection: 'row'}}>
 									<View style={{flex: 1}}>
 										<Text style={{color: '#8c8c8c', paddingBottom: 5, fontFamily: theme.fontFamily}}>Annual Revenue</Text>
-										<Text style={{color: '#3c444f', fontWeight: 'bold', fontSize: 17, fontFamily: theme.fontFamily}}>${myData.annualRevenue}</Text>
+										<Text style={{color: '#3c444f', fontWeight: 'bold', fontSize: 17, fontFamily: theme.fontFamily}}>Rs. {myData.annualRevenue} Cr</Text>
 									</View>
 									<View style={{flex: 1}}>
 										<Text style={{color: '#8c8c8c', paddingBottom: 5, fontFamily: theme.fontFamily}}>Previous Capital</Text>
-										<Text style={{color: '#3c444f', fontWeight: 'bold', fontSize: 17, fontFamily: theme.fontFamily}}>${myData.prevCapital}</Text>
+										<Text style={{color: '#3c444f', fontWeight: 'bold', fontSize: 17, fontFamily: theme.fontFamily}}>Rs. {myData.prevCapital} Cr.</Text>
 									</View>
 								</View>
 							</View>
@@ -298,7 +340,7 @@ export default class DealDetailScreen extends Component {
 							</View>
 							{/*Interesed People*/}
 							<View style={{width: deviceWidth, backgroundColor:'white', paddingLeft: 20, flexDirection: 'column', padding: 5, marginBottom: 10}}>
-								<Text style={{color: theme.themeColor, fontWeight: 'bold', fontSize: 13, fontFamily: theme.fontFamily}}>WHO HAVE INVESTED</Text>
+								<Text style={{color: theme.themeColor, fontWeight: 'bold', fontSize: 13, fontFamily: theme.fontFamily}}>WHO ARE INTERESTED</Text>
 								
 								<View style={{flexDirection: 'row', margin: 5}}>
 									{
@@ -318,7 +360,7 @@ export default class DealDetailScreen extends Component {
 														<View style={{margin: 5, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
 															<Thumbnail  source={{uri: item.user.image}} />
 															<Text style={{fontFamily: theme.fontFamily}}>{item.user.name}</Text>
-															<Text style={{fontWeight: 'bold', fontFamily: theme.fontFamily}}>{item.amount} INR</Text>
+															<Text style={{fontWeight: 'bold', fontFamily: theme.fontFamily}}>{item.amount} Cr</Text>
 														</View>
 												);}}
 											/>
@@ -345,11 +387,11 @@ export default class DealDetailScreen extends Component {
 									<Text style={{color: '#9b9b9b', fontSize: 30, fontFamily: theme.fontFamily, textAlign: 'center'}}>Thank you for showing interest!</Text>
 								</View>
 								<View style={{margin: 10}}>
-									<Text style={{color: '#9b9b9b', textAlign: 'center', fontSize: 15, fontFamily: theme.fontFamily}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </Text>
+									<Text style={{color: '#9b9b9b', textAlign: 'center', fontSize: 15, fontFamily: theme.fontFamily}}>We appreciate you for showing interest. Our manager has been notified that you are interested in this deal. You will be contacted soon.</Text>
 								</View>
 								<View style={{margin: 10}}>
 									<Button style={{backgroundColor: '#e5e5e5' }} rounded onPress={()=> this.setState({showCarousel: false, knowMorePanel: false})}>
-										<Text style={{color:'black', fontFamily: theme.fontFamily}}>Close</Text>
+										<Text style={{color:'black', fontFamily: theme.fontFamily}}>OK</Text>
 									</Button>
 								</View>
 							</View>
@@ -366,33 +408,33 @@ export default class DealDetailScreen extends Component {
 								</View>
 								<View style={{margin: 10, width: '100%'}}>
 									<View style={{flexDirection: 'row', justifyContent: "space-between"}}>
-										<Text>Rs. {minInvestAmount}</Text>
-										<Text>Rs. {totalMoney}</Text>
+										<Text>Rs. {this.state.dealInfo.minInvestment} Cr</Text>
+										<Text>Rs. {this.state.dealInfo.requiredFund} Cr</Text>
 									</View>
 									{
 										(Platform.OS == 'ios')?
 										<Slider 
 											minimumTrackTintColor={theme.themeColor}
-											maximumValue={totalMoney}
-											minimumValue={minInvestAmount}
+											maximumValue={this.state.dealInfo.requiredFund}
+											minimumValue={this.state.dealInfo.minInvestment}
 											onValueChange={(value)=>this.setState({amountToInvest: parseInt(value)})}
 											thumbTintColor={theme.themeColor}
-											step={totalMoney/20}
+											step={parseInt(this.state.dealInfo.steps*this.state.dealInfo.requiredFund/100)}
 										/>
 										:
 										<Slider
 											maximumTrackTintColor={theme.themeColor}
-											maximumValue={totalMoney}
-											minimumValue={minInvestAmount}
+											maximumValue={this.state.dealInfo.requiredFund}
+											minimumValue={this.state.dealInfo.minInvestment}
 											onValueChange={(value)=>this.setState({amountToInvest: parseInt(value)})}
 											thumbTintColor={theme.themeColor}
-											step={totalMoney/20}
+											step={this.state.dealInfo.requiredFund/20}
 											
 										/>
 
 									}
 									{/*Amount to be invested along with percentage*/}
-									<Text style={{alignSelf: 'center', marginTop: 25, fontSize: 30}}>Rs. <Text style={{color: theme.themeColor}}>{this.state.amountToInvest}</Text>  (<Text style={{color: theme.themeColor}}>{this.state.amountToInvest*100/totalMoney}%</Text>)</Text>
+									<Text style={{alignSelf: 'center', marginTop: 25, fontSize: 30}}>Rs. <Text style={{color: theme.themeColor}}>{this.state.amountToInvest} Cr </Text>  (<Text style={{color: theme.themeColor}}>{(this.state.amountToInvest*100/this.state.dealInfo.requiredFund).toFixed(2)}%</Text>)</Text>
 								</View>
 								<View style={{margin: 10, flexDirection: 'row', justifyContent: 'space-around', width: '100%'}}>
 									<Button style={{backgroundColor: theme.themeColor }} rounded onPress={this.handleInvest}>

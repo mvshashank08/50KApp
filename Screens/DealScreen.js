@@ -24,7 +24,8 @@ export default class DealScreen extends Component {
 	  this.state = {
 	  	isLoading: true,
 	  	dataSource: [],
-		isImageStatic: false
+			isImageStatic: false,
+			isLoggedIn: true
 	  };
 	  console.log(this.props.navigator);
 	}
@@ -47,6 +48,12 @@ export default class DealScreen extends Component {
 		const theme = this.props.theme;
 		var ipAddress = this.props.info.ipAddress;
 		var port = this.props.info.port;
+		var now = new Date().getTime();
+		this.props.info.retrieve('isLoggedIn').then((value)=>{
+			if(value == 'false')
+				this.setState({isLoggedIn: false});
+
+		})
 		return (
 			
 			<View style={{flex: 1}}>
@@ -62,34 +69,81 @@ export default class DealScreen extends Component {
 								//console.log(item);
 								var icon = (this.state.isImageStatic? require('./images/watermark-img.jpg'): {uri: item.image.path})
 								//console.log(icon);
-								return(
-								<TouchableOpacity onPress={()=>this.props.navigator.navigate('DealDetail', {data: item})}>
-								<Card >
-									<View style={{flex: 1, flexDirection: 'row', padding: 5}}>
+								var timeDiff = Math.abs(now - item.endDate);
+								var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24)); 
+								
+								
+								if(this.state.isLoggedIn == false){
+									//skipped login
+									if(now > item.endDate){
+										console.log(diffDays);
+										return(
+											<TouchableOpacity onPress={()=>this.props.navigator.navigate('DealDetail', {data: item})}>
+											<Card >
+												<View style={{flex: 1, flexDirection: 'row', padding: 5}}>
 
-										<View style={{flex:1, marginRight: 0, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-											<Image source={icon} style={{width: 40, height: 40}} resizeMode="contain"/>
-										</View>
+													<View style={{flex:1, marginRight: 0, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+														<Image source={icon} style={{width: 40, height: 40}} resizeMode="contain"/>
+													</View>
 
-										<View style={{flex: 5, flexDirection: 'column', justifyContent: 'space-between', marginLeft: 5}}>
+													<View style={{flex: 5, flexDirection: 'column', justifyContent: 'space-between', marginLeft: 5}}>
 
-											<View>
-												<Text style={{fontSize: 15, fontFamily: theme.fontFamily}}>{item.company}</Text>
-												
-												<Text style={{fontSize: 10, color: theme.textColor, fontFamily: theme.fontFamily}}>{item.location}</Text>
-												
-												
-												<Text style={{fontSize: 13, color: theme.textColor, fontFamily: theme.fontFamily}}>{item.industry}</Text>
+														<View>
+															<Text style={{fontSize: 15, fontFamily: theme.fontFamily}}>{item.company}</Text>
+															
+															<Text style={{fontSize: 10, color: theme.textColor, fontFamily: theme.fontFamily}}>{item.location}</Text>
+															
+															
+															<Text style={{fontSize: 13, color: theme.textColor, fontFamily: theme.fontFamily}}>{item.industry}</Text>
+														</View>
+														<View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+															<Text style={{fontSize: 10, fontFamily: theme.fontFamily, backgroundColor: 'red', color: 'white', borderRadius: 3, padding: 3, fontWeight: 'bold'}}>Closed {diffDays} days ago</Text>
+														</View>
+													</View>
+
+												</View>
+											</Card>
+											</TouchableOpacity>
+										);
+									}
+								}
+								else{
+									//successfully logged in
+									return(
+										<TouchableOpacity onPress={()=>this.props.navigator.navigate('DealDetail', {data: item})}>
+										<Card >
+											<View style={{flex: 1, flexDirection: 'row', padding: 5}}>
+
+												<View style={{flex:1, marginRight: 0, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+													<Image source={icon} style={{width: 40, height: 40}} resizeMode="contain"/>
+												</View>
+
+												<View style={{flex: 5, flexDirection: 'column', justifyContent: 'space-between', marginLeft: 5}}>
+
+													<View>
+														<Text style={{fontSize: 15, fontFamily: theme.fontFamily}}>{item.company}</Text>
+														
+														<Text style={{fontSize: 10, color: theme.textColor, fontFamily: theme.fontFamily}}>{item.location}</Text>
+														
+														
+														<Text style={{fontSize: 13, color: theme.textColor, fontFamily: theme.fontFamily}}>{item.industry}</Text>
+													</View>
+													<View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+														{
+															(now > item.endDate)?
+															<Text style={{fontSize: 10, fontFamily: theme.fontFamily, backgroundColor: 'red', color: 'white', borderRadius: 3, padding: 3, fontWeight: 'bold'}}>Closed {diffDays} days ago</Text>
+															:
+															<Text style={{fontSize: 10, fontFamily: theme.fontFamily}}>Closes in {diffDays} days</Text>
+														}
+													</View>
+												</View>
+
 											</View>
-											<View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-												<Text style={{fontSize: 10, fontFamily: theme.fontFamily}}>Closes in 2 days</Text>
-											</View>
-										</View>
-
-									</View>
-								</Card>
-								</TouchableOpacity>
-							);}}
+										</Card>
+										</TouchableOpacity>
+									);
+								}
+								}}
 						/>
 					}
 				</View>

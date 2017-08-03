@@ -2,6 +2,7 @@ import React from 'react';
 import {
   AppRegistry,
   Text,
+  AsyncStorage
 } from 'react-native';
 import { StackNavigator, NavigationActions } from 'react-navigation';
 
@@ -32,7 +33,22 @@ const globalData = {
 	other: {
 		ipAddress: '10.9.9.54',
 		port: 8008,
-		userId: 'abc123'
+		userId: 'abcd1234',
+		store: async (key, value)=>{
+			try{
+				await AsyncStorage.setItem(key, value);
+			}catch(error){
+				console.log(error);
+			}
+		},
+		retrieve: async (key)=>{
+			try{
+				var value = await AsyncStorage.getItem(key);
+				return value;
+			}catch(error){
+				console.log(error);
+			}
+		}
 	}
 }
 const backAction = NavigationActions.back();
@@ -55,7 +71,7 @@ class LandingScreen extends React.Component {
 	};
 	render() {
 		
-		return <LoginScreen navigator={this.props.navigation} theme={globalData.theme}/>;
+		return <LoginScreen navigator={this.props.navigation} theme={globalData.theme} info={globalData.other}/>;
 	}
 }
 
@@ -66,7 +82,7 @@ class Register extends React.Component {
 	};
 	render() {
 		
-		return <RegisterScreen navigator={this.props.navigation} theme={globalData.theme}/>;
+		return <RegisterScreen navigator={this.props.navigation} theme={globalData.theme} info={globalData.other}/>;
 	}
 }
 
@@ -80,7 +96,7 @@ class Signin extends React.Component {
 		return <SigninScreen navigator={this.props.navigation} theme={globalData.theme}/>;
 	}
 }
-
+/*
 class Dashboard extends React.Component {
 	static navigationOptions = {
 	title: 'Dashboard',
@@ -102,6 +118,7 @@ class Dashboard2 extends React.Component {
 		return <DashboardScreen2 navigator={this.props.navigation} theme={globalData.theme}/>;
 	}
 }
+*/
 /*
 class Deals extends React.Component {
 	static navigationOptions = {
