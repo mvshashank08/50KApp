@@ -21,9 +21,9 @@ import { Container, Header, Title, Content, Footer, FooterTab, Button, Left, Rig
 
 
 
-const knowMoreURL = 'http://10.9.9.54:8008/deal/{dealUuid}/interest/{userUuid}/';
+const knowMoreURL = 'http://10.9.9.54:8008/deal/{dealUuid}/interest/{userEmail}/';
 //http://localhost:8008/deal/{dealUuid}/interest/{userUuid}?userUuid=abcd1234&dealUuid=057435da-d82c-4eca-b09e-3031aa1ac7ca
-const investURL = 'http://10.9.9.54:8008/deal/{dealUuid}/investment/{userUuid}/{amount}/';
+const investURL = 'http://10.9.9.54:8008/deal/{dealUuid}/investment/{userEmail}/{amount}/';
 const fundingStatusURL = 'http://10.9.9.54:8008/getFundingStatus?dealUuid=';
 const getDealURL = 'http://10.9.9.54:8008/deal?dealId=';
 
@@ -50,7 +50,8 @@ export default class DealDetailScreen extends Component {
 			dealInfo: null,
 			isLoading: true,
 			isDealClosed: false,
-			isKnowMoreLoading: false
+			isKnowMoreLoading: false,
+			userEmail: null
 		};
 		//tracking the progress value dynamically
 		this.state.progressValue.addListener(({value}) => {
@@ -97,6 +98,10 @@ export default class DealDetailScreen extends Component {
 			})
 		})
 
+		//get user email and write it to state
+		this.props.info.retrieve('email').then((value)=>{
+			this.setState({userEmail: value},()=>{console.log(value)});
+		});
 
 		
 	}
@@ -125,10 +130,10 @@ export default class DealDetailScreen extends Component {
 		return (content);
 	}
 	handleKnowMore = ()=>{
-		var userUuid = this.props.info.userId;
+		var userEmail = this.state.userEmail;
 		var dealUuid = this.state.dealInfo.id;
 
-		fetch(knowMoreURL+"?userUuid="+userUuid+"&dealUuid="+dealUuid, {method: 'POST'})
+		fetch(knowMoreURL+"?userEmail="+userEmail+"&dealUuid="+dealUuid, {method: 'POST'})
 		.then((response)=>{
 			console.log(response);
 			if(response.status == 200){
@@ -143,10 +148,10 @@ export default class DealDetailScreen extends Component {
 	handleInvest = ()=>{
 		//()=> this.setState({showCarousel: false, investPanel: false})
 		var amount = this.state.amountToInvest;
-		var userUuid = this.props.info.userId;
+		var userEmail = this.state.userEmail;
 		var dealUuid = this.state.dealInfo.id;
 
-		fetch(investURL+"?userUuid="+userUuid+"&dealUuid="+dealUuid+"&amount="+amount, {method: 'POST'})
+		fetch(investURL+"?userEmail="+userEmail+"&dealUuid="+dealUuid+"&amount="+amount, {method: 'POST'})
 		.then((response)=>{
 			console.log(response);
 			if(response.status == 200){
@@ -289,7 +294,7 @@ export default class DealDetailScreen extends Component {
 								<View style={{flex: 2, flexDirection: 'row', justifyContent: 'space-between', paddingBottom: 10}}>
 									<View style={{flex: 1, flexDirection: 'column'}}>
 										<Text style={{color: '#8c8c8c', paddingBottom: 5, fontFamily: theme.fontFamily}}>Raising</Text>
-										<Text style={{color: '#3c444f', fontWeight: 'bold', fontSize: 17, fontFamily: theme.fontFamily}}>Rs. {myData.raising} Cr</Text>
+										<Text style={{color: '#3c444f', fontWeight: 'bold', fontSize: 17, fontFamily: theme.fontFamily}}>Rs. {this.state.dealInfo.requiredFund.toFixed(2)} Cr</Text>
 									</View>
 									<View style={{flex: 1}}>
 										<Text style={{color: '#8c8c8c', paddingBottom: 5, fontFamily: theme.fontFamily}}>Dilution</Text>
@@ -358,8 +363,14 @@ export default class DealDetailScreen extends Component {
 													
 													return(
 														<View style={{margin: 5, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-															<Thumbnail  source={{uri: item.user.image}} />
-															<Text style={{fontFamily: theme.fontFamily}}>{item.user.name}</Text>
+															{
+																(item.user.image == null)?
+																<Thumbnail  source={require('./images/watermark-img.jpg')} />
+																:
+																<Thumbnail  source={{uri: item.user.image}} />
+															}
+															
+															<Text style={{fontFamily: theme.fontFamily}}>{item.user.firstname +" "+ item.user.lastname}</Text>
 															<Text style={{fontWeight: 'bold', fontFamily: theme.fontFamily}}>{item.amount} Cr</Text>
 														</View>
 												);}}

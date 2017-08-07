@@ -16,6 +16,7 @@ import Sidebar from './Sidebar';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
+const getDealsUrl = 'http://10.9.9.54:8008/getAllDeals';
 
 export default class DealScreen extends Component {
 	constructor(props) {
@@ -49,8 +50,8 @@ export default class DealScreen extends Component {
 		var ipAddress = this.props.info.ipAddress;
 		var port = this.props.info.port;
 		var now = new Date().getTime();
-		this.props.info.retrieve('isLoggedIn').then((value)=>{
-			if(value == 'false')
+		this.props.info.retrieve('email').then((value)=>{
+			if(value == 'null')
 				this.setState({isLoggedIn: false});
 
 		})

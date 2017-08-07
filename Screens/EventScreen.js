@@ -16,7 +16,8 @@ import Sidebar from './Sidebar';
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
 
-const ipAddress = '10.9.9.40';
+
+const eventUrl = 'http://10.9.9.54:8001/getAllEvents'
 
 export default class EventScreen extends Component {
 	constructor(props) {
@@ -34,11 +35,11 @@ export default class EventScreen extends Component {
 	}
 
 	componentWillMount(){
-		fetch('http://'+ipAddress+':8082/events')
+		fetch(eventUrl)
       .then((response) => response.json())
       .then((responseJson) => {
-      	console.log(responseJson);
-      	this.setState({isLoading:false, dataSource: responseJson.items}) 
+      	//console.log(JSON.parse(responseJson.body));
+      	this.setState({isLoading:false, dataSource: JSON.parse(responseJson.body).items}) 
       })
       .catch((error) => {
         console.error(error);
@@ -65,9 +66,9 @@ export default class EventScreen extends Component {
 							keyExtractor={(item, index) => item.title}
 							renderItem={({item}) => {
 								//console.log(item);
-								var icon = this.state.isImageStatic ? require('./images/watermark-img.jpg') : {uri: "http:"+ipAddress+":8080/site/binaries"+item.image.path};
+								var icon = this.state.isImageStatic ? require('./images/watermark-img.jpg') : {uri: item.image.path};
 								return(
-								<TouchableOpacity onPress={()=>this.props.navigator.navigate('EventDetail', {data: item})}>
+								<TouchableOpacity onPress={()=>this.props.navigator.navigate('EventDetail', {data: item.id})}>
 									
 									<View style={{width: undefined, margin: 10, height: deviceHeight/7, borderRadius: 5}}>
 										{/*Image*/}

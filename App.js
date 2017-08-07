@@ -20,6 +20,7 @@ import ProfileScreen from './Screens/ProfileScreen';
 import HomeScreen from './Screens/HomeScreen';
 import SigninScreen from './Screens/SigninScreen';
 import Sidebar from './Screens/Sidebar';
+import LandingScreen from './Screens/LandingScreen';
 
 
 const globalData = {
@@ -48,6 +49,15 @@ const globalData = {
 			}catch(error){
 				console.log(error);
 			}
+		},
+		reset: (scene, navigation)=>{
+			var resetAction = NavigationActions.reset({
+				index: 0,
+				actions: [
+					NavigationActions.navigate({ routeName: scene})
+				]
+			})
+			navigation.dispatch(resetAction)
 		}
 	}
 }
@@ -64,14 +74,14 @@ class Home extends React.Component {
 	}
 }
 
-class LandingScreen extends React.Component {
+class LandScreen extends React.Component {
 	static navigationOptions = {
-	title: 'LoginScreen',
+	title: 'LandScreen',
 	header: null
 	};
 	render() {
 		
-		return <LoginScreen navigator={this.props.navigation} theme={globalData.theme} info={globalData.other}/>;
+		return (<LandingScreen navigator={this.props.navigation} theme={globalData.theme} info={globalData.other}/>);
 	}
 }
 
@@ -96,40 +106,7 @@ class Signin extends React.Component {
 		return <SigninScreen navigator={this.props.navigation} theme={globalData.theme}/>;
 	}
 }
-/*
-class Dashboard extends React.Component {
-	static navigationOptions = {
-	title: 'Dashboard',
-	header: null
-	};
-	render() {
-		
-		return <DashboardScreen navigator={this.props.navigation} theme={globalData.theme}/>;
-	}
-}
 
-class Dashboard2 extends React.Component {
-	static navigationOptions = {
-	title: 'Dashboard2',
-	header: null
-	};
-	render() {
-		
-		return <DashboardScreen2 navigator={this.props.navigation} theme={globalData.theme}/>;
-	}
-}
-*/
-/*
-class Deals extends React.Component {
-	static navigationOptions = {
-	title: 'Deals',
-	header: null
-	};
-	render() {
-		return <DealScreen navigator={this.props.navigation} theme={theme}/>;
-	}
-}
-*/
 class DealDetail extends React.Component {
 	static navigationOptions = {
 		title: 'DealDetail',
@@ -142,19 +119,6 @@ class DealDetail extends React.Component {
 	}
 }
 
-
-/*
-class Events extends React.Component {
-	static navigationOptions = {
-		title: 'Register',
-		header: null
-	};
-	render() {
-		
-		return <EventScreen navigator={this.props.navigation} theme={theme}/>;
-	}
-}
-*/
 class EventDetail extends React.Component {
 	static navigationOptions = {
 		title: 'Register',
@@ -165,18 +129,7 @@ class EventDetail extends React.Component {
 		return <EventDetailScreen navigator={this.props.navigation} theme={globalData.theme} data={params}/>;
 	}
 }
-/*
-class News extends React.Component {
-	static navigationOptions = {
-		title: 'Register',
-		header: null
-	};
-	render() {
-		
-		return <NewsScreen navigator={this.props.navigation} theme={theme}/>;
-	}
-}
-*/
+
 class NewsDetail extends React.Component {
 	static navigationOptions = {
 		title: 'NewsDetail',
@@ -187,18 +140,18 @@ class NewsDetail extends React.Component {
 		return <NewsDetailScreen navigator={this.props.navigation} theme={globalData.theme} data={params}/>;
 	}
 }
-/*
-class Profile extends React.Component {
+
+class Login extends React.Component {
 	static navigationOptions = {
-		title: 'Register',
+		title: 'Login',
 		header: null
 	};
 	render() {
-		
-		return <ProfileScreen navigator={this.props.navigation} theme={theme}/>;
+		const { params } = this.props.navigation.state;
+		return <LoginScreen navigator={this.props.navigation} theme={globalData.theme} data={params} info={globalData.other}/>;
 	}
 }
-*/
+
 class Sample extends React.Component {
 	static navigationOptions = {
 		title: 'NewsDetail',
@@ -211,9 +164,10 @@ class Sample extends React.Component {
 }
 const SampleApp3 = StackNavigator(
 	{
-		LandingScreen: { screen: LandingScreen },
+		LandScreen: {screen: LandScreen},
 		Register: {screen: Register},
 		Signin: {screen: Signin},
+		Login: {screen: Login},
 		Home: {screen: Home},	
 		DealDetail: {screen: DealDetail},
 		EventDetail: {screen: EventDetail},

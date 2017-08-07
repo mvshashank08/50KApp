@@ -17,6 +17,7 @@ const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
 
 const ipAddress = '10.9.9.40';
+const newsUrl = 'http://10.9.9.54:8000/getAllNews';
 
 export default class DealScreen extends Component {
 	constructor(props) {
@@ -25,20 +26,16 @@ export default class DealScreen extends Component {
 	  this.state = {
 	  	isLoading: true,
 		isImageStatic: false,
-	  	dataSource: [
-	  		{title: '50K Network launch in Raipur', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', date: '10 JUL', id: 1},
-            {title: 'The Quint Covers Community', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', date: '20 AUG', id: 2},
-            {title: 'Fabulyst, A Startup from 50K', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', date: '03 AUG', id: 3}
-	  	]
+	  	dataSource: null
 	  };
 	}
 
 	componentWillMount(){
-		fetch('http://'+ipAddress+':8082/news')
+		fetch(newsUrl)
       .then((response) => response.json())
       .then((responseJson) => {
       	console.log(responseJson);
-      	this.setState({isLoading:false, dataSource: responseJson.items}) 
+      	this.setState({isLoading:false, dataSource: JSON.parse(responseJson.body).items}) 
       })
       .catch((error) => {
         console.error(error);
@@ -71,9 +68,9 @@ export default class DealScreen extends Component {
 							keyExtractor={(item, index) => item.title}
 							renderItem={({item}) => {
 								//console.log(item);
-								var icon = this.state.isImageStatic ? require('./images/watermark-img.jpg') : {uri: "http:"+ipAddress+":8080/site/binaries"+item.image.path};
+								var icon = this.state.isImageStatic ? require('./images/watermark-img.jpg') : {uri: item.image.path};
 								return(
-								<TouchableOpacity onPress={()=>this.props.navigator.navigate('NewsDetail', {data: item})}>
+								<TouchableOpacity onPress={()=>this.props.navigator.navigate('NewsDetail', {data: item.id})}>
 									<View style={{width: undefined, margin: 10, height: deviceHeight/7, borderRadius: 5}}>
 										{/*Image*/}
 										<View style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: 5, backgroundColor: 'black'}}>

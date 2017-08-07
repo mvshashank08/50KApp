@@ -77,7 +77,7 @@ export default class LoginScreen extends Component {
 					</View>
 
 					<View style={{flex: 0}}>
-						<Button onPress={()=>{this.props.info.store('isLoggedIn', 'false') ;this.props.navigator.navigate('Home')}} transparent>
+						<Button onPress={()=>{this.props.info.store('email', 'null') ;this.props.info.reset('Home', this.props.navigator)}} transparent>
 							<Text style={{color: theme.themeColor, fontFamily: theme.fontFamily}}>SKIP</Text>
 						</Button>
 					</View>
