@@ -15,13 +15,14 @@ import {
 } from 'react-native'
 import { Container, Header, Title, Content, Footer, FooterTab, Button, Left, Right, Body, Drawer, Card, H3, Badge, Thumbnail, Tabs, Tab, TabHeading, List, ListItem } from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Sidebar from './Sidebar';
+//import config
+import {config} from '../config.js';
 
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
 
-const getProfileUrl = 'http://10.9.9.54:8080/profile?email=';
+const getProfileUrl = config.loginUrl+'profile?userEmail=';
 
 
 export default class ProfileScreen extends Component {

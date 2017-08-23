@@ -11,13 +11,14 @@ import {
 	Dimensions
 } from 'react-native';
 import { Container, Header, Title, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Drawer, Card, H3, Text, Badge } from 'native-base';
-import Sidebar from './Sidebar';
+//import config
+import {config} from '../config.js';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
 
 
-const eventUrl = 'http://10.9.9.54:8001/getAllEvents'
+const eventUrl = config.eventUrl+"all";
 
 export default class EventScreen extends Component {
 	constructor(props) {
@@ -39,7 +40,7 @@ export default class EventScreen extends Component {
       .then((response) => response.json())
       .then((responseJson) => {
       	//console.log(JSON.parse(responseJson.body));
-      	this.setState({isLoading:false, dataSource: JSON.parse(responseJson.body).items}) 
+      	this.setState({isLoading:false, dataSource: responseJson.items}) 
       })
       .catch((error) => {
         console.error(error);

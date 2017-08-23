@@ -17,13 +17,16 @@ import {
 } from 'react-native';
 import { Button, Item, Input, Icon } from 'native-base';
 
+//import config
+import {config} from '../config.js';
+
 //import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
 
-const LinkedinUrl = 'http://facebook.github.io/react-native/releases/0.46/'
-const sendAuthCode = 'http://10.9.9.54:8080/authcode/?code=';
-const redirectUrl = 'http://10.9.9.54:8080/loginstatus';
+
+const sendAuthCode = config.loginUrl;
+const redirectUrl = config.loginUrl+'status';
 
 class FadeInView extends React.Component {
   state = {
@@ -86,19 +89,44 @@ export default class RegisterScreen extends Component {
         console.log(code);
         this.setState({authorizationCode: code, modalVisible: false}, ()=>{
           
-          //send authorization code to server
-          //console.log('about to send auth code '+ code);
-          fetch(sendAuthCode+code, {method: 'GET'})
-          .then((response) => response.json())
-          .then((responseJson)=>{
-            console.log(responseJson);
-            this.props.info.store('email', responseJson.body);
-            this.props.info.store('authCode', code);
-            //response sent successfully, send the user to home screen
-            this.props.info.reset('Home', this.props.navigator);
-            //clear the navigator stack also
-          });
+			//send authorization code to server
+			var authCodeUrl = sendAuthCode+code;
+			console.log(authCodeUrl);
+			
+			var request = new XMLHttpRequest();
+			request.onreadystatechange = (e) => {
+				if (request.readyState !== 4) {
+					return;
+				}
 
+				if (request.status === 200) {
+					console.log(request.responseText);
+					var email = JSON.parse(request.responseText).body;
+					this.props.info.store('email', email);
+					this.props.info.store('authCode', code);
+					//response sent successfully, send the user to home screen
+					this.props.info.reset('Home', this.props.navigator);
+					//clear the navigator stack also
+
+				} else {
+					alert('An error occured. Please login again.');
+				}
+			};
+
+			request.open('GET', authCodeUrl);
+			request.send();
+			/*
+			fetch(authCodeUrl)
+			.then((response) => response.json())
+			.then((responseJson)=>{
+				console.log(responseJson);
+				this.props.info.store('email', responseJson.body);
+				this.props.info.store('authCode', code);
+				//response sent successfully, send the user to home screen
+				this.props.info.reset('Home', this.props.navigator);
+				//clear the navigator stack also
+			});
+			*/
         });
       }
       else{

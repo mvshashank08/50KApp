@@ -11,12 +11,13 @@ import {
 	Dimensions
 } from 'react-native';
 import { Container, Header, Title, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Drawer, Card, H3, Text, Badge } from 'native-base';
-import Sidebar from './Sidebar';
+//import config
+import {config} from '../config.js';
 
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
-const getDealsUrl = 'http://10.9.9.54:8008/getAllDeals';
+const getDealsUrl = config.dealUrl+'all';
 
 export default class DealScreen extends Component {
 	constructor(props) {
@@ -25,20 +26,20 @@ export default class DealScreen extends Component {
 	  this.state = {
 	  	isLoading: true,
 	  	dataSource: [],
-			isImageStatic: false,
-			isLoggedIn: true
+		isImageStatic: false,
+		isLoggedIn: true
 	  };
 	  console.log(this.props.navigator);
 	}
 
 	componentWillMount(){
-		
-		fetch('http://'+this.props.info.ipAddress+':'+this.props.info.port+'/getAllDeals')
+		console.log(getDealsUrl);
+
+		fetch(getDealsUrl)
       	.then((response) => response.json())
       	.then((responseJson) => {
-      	//console.log(responseJson.body);
-		
-      	this.setState({isLoading:false, dataSource: JSON.parse(responseJson.body).items}) 
+      		console.log(responseJson);
+      		this.setState({isLoading:false, dataSource: responseJson.items}) 
       })
       .catch((error) => {
         console.error(error);
@@ -47,8 +48,7 @@ export default class DealScreen extends Component {
 
 	render() {
 		const theme = this.props.theme;
-		var ipAddress = this.props.info.ipAddress;
-		var port = this.props.info.port;
+		
 		var now = new Date().getTime();
 		this.props.info.retrieve('email').then((value)=>{
 			if(value == 'null')

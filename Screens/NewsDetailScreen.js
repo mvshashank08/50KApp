@@ -14,11 +14,13 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import { Container, Header, Title, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Drawer, Card, H3, Badge, Thumbnail, List, ListItem } from 'native-base';
+//import config
+import {config} from '../config.js';
 
 const deviceHeight = Dimensions.get('window').height;
 const deviceWidth = Dimensions.get('window').width;
-const ipAddress = '10.9.9.40';
-const newsDetailUrl = 'http://10.9.9.54:8000/newsItem?newsId=';
+
+const newsDetailUrl = config.newsUrl;
 
 export default class NewsDetailScreen extends Component{
     constructor(props){
@@ -44,8 +46,8 @@ export default class NewsDetailScreen extends Component{
         fetch(newsDetailUrl + id)
       .then((response) => response.json())
       .then((responseJson) => {
-      	console.log(JSON.parse(responseJson.body));
-      	this.setState({isLoading:false, dataSource: JSON.parse(responseJson.body)}) 
+      	//console.log(JSON.parse(responseJson.body));
+      	this.setState({isLoading:false, dataSource: responseJson}) 
       })
       .catch((error) => {
         console.error(error);

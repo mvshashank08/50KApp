@@ -17,15 +17,16 @@ import {
 	Alert
 } from 'react-native';
 import { Container, Header, Title, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Drawer, Card, H3, Badge, Thumbnail } from 'native-base';
+//import config
+import {config} from '../config.js';
 
 
 
-
-const knowMoreURL = 'http://10.9.9.54:8008/deal/{dealUuid}/interest/{userEmail}/';
+const knowMoreURL = config.dealUrl;
 //http://localhost:8008/deal/{dealUuid}/interest/{userUuid}?userUuid=abcd1234&dealUuid=057435da-d82c-4eca-b09e-3031aa1ac7ca
-const investURL = 'http://10.9.9.54:8008/deal/{dealUuid}/investment/{userEmail}/{amount}/';
-const fundingStatusURL = 'http://10.9.9.54:8008/getFundingStatus?dealUuid=';
-const getDealURL = 'http://10.9.9.54:8008/deal?dealId=';
+const investURL = config.dealUrl;
+const fundingStatusURL = config.dealUrl;
+const getDealURL = config.dealUrl;
 
 
 
@@ -133,7 +134,7 @@ export default class DealDetailScreen extends Component {
 		var userEmail = this.state.userEmail;
 		var dealUuid = this.state.dealInfo.id;
 
-		fetch(knowMoreURL+"?userEmail="+userEmail+"&dealUuid="+dealUuid, {method: 'POST'})
+		fetch(knowMoreURL+dealUuid+"/interest/?userEmail="+userEmail, {method: 'POST'})
 		.then((response)=>{
 			console.log(response);
 			if(response.status == 200){
@@ -151,7 +152,7 @@ export default class DealDetailScreen extends Component {
 		var userEmail = this.state.userEmail;
 		var dealUuid = this.state.dealInfo.id;
 
-		fetch(investURL+"?userEmail="+userEmail+"&dealUuid="+dealUuid+"&amount="+amount, {method: 'POST'})
+		fetch(investURL+dealUuid+"/investment/"+userEmail+"/"+amount, {method: 'POST'})
 		.then((response)=>{
 			console.log(response);
 			if(response.status == 200){
@@ -445,7 +446,7 @@ export default class DealDetailScreen extends Component {
 
 									}
 									{/*Amount to be invested along with percentage*/}
-									<Text style={{alignSelf: 'center', marginTop: 25, fontSize: 30}}>Rs. <Text style={{color: theme.themeColor}}>{this.state.amountToInvest} Cr </Text>  (<Text style={{color: theme.themeColor}}>{(this.state.amountToInvest*100/this.state.dealInfo.requiredFund).toFixed(2)}%</Text>)</Text>
+									<Text style={{alignSelf: 'center', marginTop: 25, fontSize: 20}}>Rs. <Text style={{color: theme.themeColor}}>{this.state.amountToInvest} Cr </Text>  (<Text style={{color: theme.themeColor}}>{(this.state.amountToInvest*100/this.state.dealInfo.requiredFund).toFixed(2)}%</Text>)</Text>
 								</View>
 								<View style={{margin: 10, flexDirection: 'row', justifyContent: 'space-around', width: '100%'}}>
 									<Button style={{backgroundColor: theme.themeColor }} rounded onPress={this.handleInvest}>
