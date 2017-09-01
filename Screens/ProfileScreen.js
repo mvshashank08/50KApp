@@ -60,7 +60,7 @@ export default class ProfileScreen extends Component {
 				})
 			}
 			else{
-				this.setState({isLoggedIn: false});
+				this.setState({isLoggedIn: false, isLoading: false});
 			}
 			
 		});
@@ -70,9 +70,11 @@ export default class ProfileScreen extends Component {
 	
 	render() {
 		const theme = this.props.theme;
-		if(this.state.isLoggedIn == true){
-			//user has logged in
-			if(this.state.isLoading == false){
+		
+		if(this.state.isLoading == false){
+			//data loaded
+			if(this.state.isLoggedIn == true){
+				//user has logged in
 				return(
 					<View>
 						<View style={{backgroundColor: theme.backgroundColor, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', width: deviceWidth, height: deviceHeight/4}}>
@@ -123,26 +125,27 @@ export default class ProfileScreen extends Component {
 			}
 			else{
 				return(
-					<View style={{flex: 1, justifyContent:'center', alignItems: 'center'}}>
-						<ActivityIndicator size={'large'} color={theme.themeColor}/>
+					//user has not logged in
+					<View style={{flex: 1, backgroundColor: theme.backgroundColor, flexDirection: 'column', justifyContent: 'center', margin: 10, padding: 10}}>
+						<Text style={{fontFamily: theme.fontFamily}}>Please sign up with us to set up your profile. </Text>
+						<TouchableOpacity onPress={()=>{this.props.info.reset('Login', this.props.navigator)}}>
+							<Text style={{color: theme.themeColor, fontSize: 20, fontFamily: theme.fontFamily}}>Sign up</Text>
+						</TouchableOpacity>
+						
+						
 					</View>
 				);
 			}
 		}
 		else{
-			//user has not logged in
+			//data is still loading
 			return(
-				<View style={{flex: 1, backgroundColor: theme.backgroundColor, flexDirection: 'column', justifyContent: 'center', margin: 10, padding: 10}}>
-					<Text style={{fontFamily: theme.fontFamily}}>Please sign up with us to set up your profile. </Text>
-					<TouchableOpacity onPress={()=>{this.props.info.reset('Login', this.props.navigator)}}>
-						<Text style={{color: theme.themeColor, fontSize: 20, fontFamily: theme.fontFamily}}>Sign up</Text>
-					</TouchableOpacity>
-					
-					
+				<View style={{flex: 1, justifyContent:'center', alignItems: 'center', margin: 5}}>
+					<ActivityIndicator size={'large'} color={theme.themeColor}/>
 				</View>
 			);
-
 		}
+		
 		
 	}
 }
